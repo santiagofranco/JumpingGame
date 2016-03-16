@@ -73,6 +73,7 @@ public class GameScreen extends BaseScreen {
     @Override
     public void show() {
 
+        //FIXME: bodys and textures dont match
         player = new Player(game.getAssetManager().get("player.png", Texture.class), world, new Vector2(1, 2));
         floor = new Floor(game.getAssetManager().get("floor.png", Texture.class), world, new Vector2(0, 0 + 0.5f), 20f, 1f);
         hud = new HUD();
@@ -80,20 +81,21 @@ public class GameScreen extends BaseScreen {
         stage.addActor(floor);
         stage.addActor(player);
 
-        //TODO: Improve algorithm to generate platforms, and AUTOGENERATE when the player goes up.
+        //TODO: AUTOGENERATE when the player goes up.
         platforms.clear();
         int ax = (int) (Math.random() * 5 + 0);
         platforms.add(new Platform(game.getAssetManager().get("platform.png", Texture.class), world, new Vector2(ax, 3), 1.2f, 0.3f));
         for (int i = 3; i <= 25; i++) {
 
             int x, y;
-            x = (int) (Math.random() * 5 + 0);
+            x = (int) (Math.random() * 4.5 + 0.5);
             y = ((int) (Math.random() * 3 + 1)) + i;
-            while ((x > ax && x < ax * 0.6f) || (x < ax && x > ax - 0.6f)) {
-                x = (int) (Math.random() * 5 + 0);
-            }
 
-            platforms.add(new Platform(game.getAssetManager().get("platform.png", Texture.class), world, new Vector2(x, y), 1.2f, 0.3f));
+            while ((x < ax && x > ax + 1f) && (x > ax && x < ax - 1f)) {
+                x = (int) (Math.random() * 4.5 + 0.5);
+            }
+            Gdx.app.log("kk",x+"x"+y);
+            platforms.add(new Platform(game.getAssetManager().get("platform.png", Texture.class), world, new Vector2(x, y), 1f, 0.3f));
             ax = x;
         }
 

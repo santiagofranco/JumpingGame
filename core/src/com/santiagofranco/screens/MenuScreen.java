@@ -39,7 +39,7 @@ public class MenuScreen extends BaseScreen {
         });
 
         play.setSize(280, 50);
-        play.setPosition(Constants.GAME_WIDHT/2 - play.getWidth()/2, 50);
+        play.setPosition(Constants.GAME_WIDHT/2 - play.getWidth()/2, 75);
 
         bg = new Image(game.getAssetManager().get("bgmenu.png",Texture.class));
         bg.setPosition(0,0);
