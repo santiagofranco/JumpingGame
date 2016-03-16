@@ -3,6 +3,7 @@ package com.santiagofranco.screens;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,17 +13,23 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.santiagofranco.Constants;
 import com.santiagofranco.MainGame;
 import com.santiagofranco.actors.Floor;
+import com.santiagofranco.actors.HUD;
 import com.santiagofranco.actors.Platform;
 import com.santiagofranco.actors.Player;
 
 import java.util.ArrayList;
+
+import static com.santiagofranco.Constants.*;
 
 /**
  * @author santiagofranco - @santicolombian
@@ -37,6 +44,7 @@ public class GameScreen extends BaseScreen {
     private Floor floor;
     private Player player;
     private ArrayList<Platform> platforms;
+    private HUD hud;
 
     private Sound jumpSound, dieSound;
     private Music song;
@@ -44,10 +52,11 @@ public class GameScreen extends BaseScreen {
     private boolean playing;
     private int score;
     private int jumps;
+    private float lastPlatformTouched;
 
     public GameScreen(MainGame game) {
         super(game);
-        stage = new Stage(new FillViewport(360, 640));
+        stage = new Stage(new FillViewport(GAME_WIDHT, GAME_HEIGHT));
         world = new World(new Vector2(0, -10), true);
         world.setContactListener(new GameContactsListener());
 
@@ -67,11 +76,12 @@ public class GameScreen extends BaseScreen {
 
         player = new Player(game.getAssetManager().get("player.png", Texture.class), world, new Vector2(1, 2));
         floor = new Floor(game.getAssetManager().get("floor.png", Texture.class), world, new Vector2(0, 0 + 0.5f), 20f, 1f);
+        hud = new HUD();
 
         stage.addActor(floor);
         stage.addActor(player);
 
-        //TODO: Improve algorithm to generate platforms, and autogenerate when the player goes up.
+        //TODO: Improve algorithm to generate platforms, and AUTOGENERATE when the player goes up.
         platforms.clear();
         int ax = (int) (Math.random() * 5 + 0);
         platforms.add(new Platform(game.getAssetManager().get("platform.png", Texture.class), world, new Vector2(ax, 3), 1.2f, 0.3f));
@@ -98,6 +108,7 @@ public class GameScreen extends BaseScreen {
         playing = false;
         score = 0;
         jumps = 0;
+        lastPlatformTouched = 0;
 
         song.play();
 
@@ -137,10 +148,11 @@ public class GameScreen extends BaseScreen {
         stage.act(delta);
         world.step(delta, 6, 2);
         updateCamera();
-        //TODO: update score
+        hud.update(stage.getBatch(), 10, stage.getCamera().position.y + GAME_HEIGHT / 2 - 20);
         stage.draw();
 
     }
+
 
     private void updateCamera() {
         float y = player.getY();
@@ -179,10 +191,8 @@ public class GameScreen extends BaseScreen {
             }
 
             if (areCollided(contact, "player", "platformTopLimit")) {
-                if (!playing && jumps > 0) playing = true;
-                else jumps++;
-                //TODO: sumar puntos cuando la plataforma este mas alta que la anterior tocada
-                score++;
+                letsPlay();
+                incScore(contact);
                 playerJump();
             }
         }
@@ -200,6 +210,19 @@ public class GameScreen extends BaseScreen {
         @Override
         public void postSolve(Contact contact, ContactImpulse impulse) {
 
+        }
+    }
+
+    private void letsPlay() {
+        if (!playing && jumps > 0) playing = true;
+        else jumps++;
+    }
+
+    private void incScore(Contact contact) {
+        Fixture platform = (contact.getFixtureA().getUserData().equals("platformTopLimit")) ? contact.getFixtureA() : contact.getFixtureB();
+        if(platform.getBody().getPosition().y > lastPlatformTouched){
+            hud.incScore();
+            lastPlatformTouched = platform.getBody().getPosition().y;
         }
     }
 

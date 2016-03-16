@@ -78,13 +78,13 @@ public class Player extends Actor {
         }
 
         //Se sale por el borde derecho
-        if (body.getPosition().x > 360 / PIXELS_IN_METERS) {
+        if (body.getPosition().x > GAME_WIDHT / PIXELS_IN_METERS) {
             body.setTransform(new Vector2(0, body.getPosition().y), body.getAngle());
         }
 
         //Se sale por el borde izquierdo
         if (body.getPosition().x < 0) {
-            body.setTransform(new Vector2((360 / PIXELS_IN_METERS), body.getPosition().y), body.getAngle());
+            body.setTransform(new Vector2((GAME_WIDHT / PIXELS_IN_METERS), body.getPosition().y), body.getAngle());
         }
     }
 

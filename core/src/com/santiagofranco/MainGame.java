@@ -32,8 +32,8 @@ public class MainGame extends Game {
 
         screens = new HashMap<String, BaseScreen>();
         screens.put("game", new GameScreen(this));
-        screens.put("gameover", new GameOverScreen(this));
-        screens.put("menu", new MenuScreen(this));
+        screens.put("gameover", new GameOverScreen(this)); //TODO: Put images (GAME OVER)
+        screens.put("menu", new MenuScreen(this)); //TODO: Put images (JUMPING GAME)
 
         setScreen(screens.get("menu"));
     }
