@@ -18,6 +18,8 @@ public class MainGame extends Game {
     private Map<String, BaseScreen> screens;
     private AssetManager assetManager;
 
+    private int finalScore;
+
     @Override
     public void create() {
 
@@ -25,6 +27,8 @@ public class MainGame extends Game {
         assetManager.load("player.png", Texture.class);
         assetManager.load("floor.png", Texture.class);
         assetManager.load("platform.png", Texture.class);
+        assetManager.load("bggameover.png", Texture.class);
+        assetManager.load("bgmenu.png", Texture.class);
         assetManager.load("sfx/jump.ogg", Sound.class);
         assetManager.load("sfx/die.ogg", Sound.class);
         assetManager.load("mfx/song.ogg", Music.class);
@@ -32,9 +36,10 @@ public class MainGame extends Game {
 
         screens = new HashMap<String, BaseScreen>();
         screens.put("game", new GameScreen(this));
-        screens.put("gameover", new GameOverScreen(this)); //TODO: Put images (GAME OVER)
-        screens.put("menu", new MenuScreen(this)); //TODO: Put images (JUMPING GAME)
+        screens.put("gameover", new GameOverScreen(this));
+        screens.put("menu", new MenuScreen(this));
 
+        finalScore = 0;
         setScreen(screens.get("menu"));
     }
 
@@ -45,5 +50,13 @@ public class MainGame extends Game {
 
     public Map<String, BaseScreen> getScreensManager() {
         return screens;
+    }
+
+    public int getFinalScore() {
+        return finalScore;
+    }
+
+    public void setFinalScore(int finalScore) {
+        this.finalScore = finalScore;
     }
 }

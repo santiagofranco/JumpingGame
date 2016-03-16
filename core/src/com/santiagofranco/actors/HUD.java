@@ -27,4 +27,8 @@ public class HUD {
         score++;
     }
 
+    public int getScore(){
+        return score;
+    }
+
 }

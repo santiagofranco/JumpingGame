@@ -1,13 +1,19 @@
 package com.santiagofranco.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.viewport.FillViewport;
+import com.santiagofranco.Constants;
 import com.santiagofranco.MainGame;
 
 /**
@@ -20,14 +26,16 @@ public class GameOverScreen extends BaseScreen {
     private Skin skin;
 
     private TextButton retry, menu;
+    private Image bg;
+    private Label scoreLabel;
 
     public GameOverScreen(final MainGame game) {
         super(game);
-        stage = new Stage(new FillViewport(360,640));
+        stage = new Stage(new FillViewport(Constants.GAME_WIDHT, Constants.GAME_HEIGHT));
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
-        retry = new TextButton("Reintentar",skin);
-        menu = new TextButton("Menu",skin);
+        retry = new TextButton("Reintentar", skin);
+        menu = new TextButton("Menu", skin);
 
         retry.addCaptureListener(new ChangeListener() {
             @Override
@@ -43,11 +51,19 @@ public class GameOverScreen extends BaseScreen {
             }
         });
 
-        retry.setSize(200, 200);
-        retry.setPosition(80,330);
-        menu.setSize(200,200);
-        menu.setPosition(80,110);
+        retry.setSize(280, 50);
+        retry.setPosition(Constants.GAME_WIDHT / 2 - retry.getWidth() / 2, 200);
+        menu.setSize(280, 50);
+        menu.setPosition(Constants.GAME_WIDHT / 2 - retry.getWidth() / 2, 140);
 
+        bg = new Image(game.getAssetManager().get("bggameover.png", Texture.class));
+        bg.setPosition(0, 0);
+
+        scoreLabel = new Label("", new Label.LabelStyle(new BitmapFont(), Color.WHITE));
+        scoreLabel.setFontScale(4);
+
+        stage.addActor(bg);
+        stage.addActor(scoreLabel);
         stage.addActor(retry);
         stage.addActor(menu);
     }
@@ -55,6 +71,10 @@ public class GameOverScreen extends BaseScreen {
 
     @Override
     public void show() {
+        float labelX = ((Constants.GAME_WIDHT / 2) / 2 - (scoreLabel.getWidth() / 2));
+        float labelY = ((Constants.GAME_HEIGHT / 2) - (scoreLabel.getHeight() / 2));
+        scoreLabel.setPosition(labelX-20, labelY);
+        scoreLabel.setText("Score: " + game.getFinalScore());
         Gdx.input.setInputProcessor(stage);
     }
 

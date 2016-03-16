@@ -50,7 +50,6 @@ public class GameScreen extends BaseScreen {
     private Music song;
 
     private boolean playing;
-    private int score;
     private int jumps;
     private float lastPlatformTouched;
 
@@ -106,7 +105,6 @@ public class GameScreen extends BaseScreen {
         stage.getCamera().update();
 
         playing = false;
-        score = 0;
         jumps = 0;
         lastPlatformTouched = 0;
 
@@ -148,7 +146,7 @@ public class GameScreen extends BaseScreen {
         stage.act(delta);
         world.step(delta, 6, 2);
         updateCamera();
-        hud.update(stage.getBatch(), 10, stage.getCamera().position.y + GAME_HEIGHT / 2 - 20);
+        hud.update(stage.getBatch(), 10, stage.getCamera().position.y + GAME_HEIGHT / 2 - 40);
         stage.draw();
 
     }
@@ -245,6 +243,7 @@ public class GameScreen extends BaseScreen {
                 Actions.run(new Runnable() {
                     @Override
                     public void run() {
+                        game.setFinalScore(hud.getScore());
                         game.setScreen(game.getScreensManager().get("gameover"));
                     }
                 })
